@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <title>Login Ponto Eletrônico</title>
+  <link rel="stylesheet" href="css/style.css">
+  <!-- Fundo customizado -->
+  <style>
+    body {
+      background-image: url('img/background.jpg');
+      background-size: cover;
+      background-position: center;
+      background-repeat: no-repeat;
+      min-height: 100vh;
+      margin: 0;
+    }
+    /* Opcional: um background semitransparente atrás do form */
+    .login-box {
+      background: rgba(255, 255, 255, 0.9);
+      padding: 20px;
+      max-width: 450px;
+      height: 500px;
+      margin: 100px auto;
+      border-radius: 8px;
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.67);
+    }
+  </style>
+</head>
+<body>
+  <div class="login-box">
+    <img src="img/Logotipo.png" alt="Logotipo" class="logotipo">
+    <h1 class="lbllogin">Login</h1>
+    <label class="lblcodigo">Código: <input id="code"></label><br>
+    <label class="lblsenha">Senha: <input type="password" id="password"></label><br>
+    <label class="remember">
+      <input type="checkbox" id="remember"> Lembrar
+    </label>
+    <button class="back-btn" id="btnLogin">Login</button>
+    <br>
+    <div id="error" style="color:red; margin-top:10px;"></div>
+  </div>
+  <script src="js/login.js"></script>
+</body>
+</html>
+
+

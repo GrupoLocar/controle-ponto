@@ -1,0 +1,173 @@
+/* 1) Fundo global e sem scroll */
+html,
+body {
+  margin: 0;
+  height: 100%;
+  overflow-y: hidden;
+  background: url('../img/background.jpg') no-repeat center/cover;
+}
+
+/* 2) Caixa uniforme para todas as telas */
+.login-box {
+  width: 450px;
+  height: 500px;
+  margin: 100px auto;
+  position: relative;
+  background: rgba(255, 255, 255, 0.9);
+  padding: 20px;
+  border-radius: 8px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+  text-align: center;
+  box-sizing: border-box;
+}
+
+/* 3) Largura extra para telas com mais conteúdo (diary, sheet) */
+.container-large {
+  max-width: 450px;
+  height: 500px;
+}
+
+/* Logotipo na tela de login */
+.logotipo {
+  display: block;
+  margin: 0 auto 20px;
+  margin-top: 30px;
+  max-width: 80px;
+  max-height: 80px;
+}
+
+/* 4) Elementos internos */
+.login-box h1 {
+  margin-bottom: 20px;
+}
+
+.lbllogin {
+  margin-bottom: 150px;
+}
+
+.login-box label {
+  display: block;
+  margin-bottom: 10px;
+  text-align: left;
+}
+
+/* 5) Inputs Código, Senha e Date */
+.login-box input[type="text"],
+.login-box input[type="date"],
+.login-box input#code {
+  width: 200px;
+  max-width: 100%;
+  height: 2em;
+  padding: 5px;
+  margin-top: 5px;
+  background-color: #fff;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  box-sizing: border-box;
+}
+
+.login-box input[type="password"] {
+  width: 200px;
+  max-width: 100%;
+  height: 2em;
+  padding: 5px;
+  margin-top: 5px;
+  margin-left: 10px;
+  background-color: #fff;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  box-sizing: border-box;
+}
+
+/* 6) Botões padrão */
+.login-box button {
+  width: 100%;
+  padding: 10px;
+  margin-top: 10px;
+  cursor: pointer;
+}
+
+.lblData {
+  margin-left: 60px;
+}
+
+.lblsenha {
+  margin-left: 60px;
+}
+
+.lblcodigo {
+  margin-left: 60px;
+}
+
+/* gradiente azul em Registrar e Login */
+#punchBtn,
+#btnLogin {
+  background: linear-gradient(to right, #0066ff, #3399ff);
+  color: #fff;
+  border: none;
+  width: 150px;
+}
+
+/* hover laranja */
+#punchBtn:hover,
+button:hover {
+  background: #FF6700 !important;
+  color: #fff !important;
+}
+
+/* 7) Botão Logout – sem espaçamento acima */
+#btnLogout,
+#btnSheet,
+#btnDiary {
+  margin-top: 10px;
+  width: 250px;
+}
+
+#btnReport {
+  width: 180px;
+}
+
+/* 8) Checkbox “Salvar código” */
+.login-box label.remember {
+  text-align: center;
+  margin-bottom: 15px;
+}
+
+/* 9) Remove bullets em listas */
+.login-box ul {
+  list-style: none;
+  padding: 0;
+  margin: 0 0 10px 0;
+}
+
+/* 10) Botão “Voltar” enxuto */
+.login-box button.back-btn {
+  width: 180px;
+  padding: 8px 16px;
+  font-size: 0.9em;
+}
+
+/* 11) Outras estilizações */
+#msg {
+  color: red;
+  margin: 10px 0;
+  display: none;
+}
+
+.punch-info {
+  margin: 5px 0;
+}
+
+.collapse {
+  display: none;
+  padding-left: 10px;
+}
+
+.btnPDF,
+.btnExcel {
+  width: 100px !important;        /* requisito */
+  display: inline-block;           /* lado a lado */
+  margin: 8px 6px 0 6px;           /* respiro lateral */
+}
+
+

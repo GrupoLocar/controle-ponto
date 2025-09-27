@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+  <meta charset="UTF-8">
+  <title>Diário de Folha de Ponto</title>
+  <link rel="stylesheet" href="css/style.css">
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+</head>
+
+<body>
+  <div class="login-box container-large">
+    <h1>Diário de Folha de Ponto</h1>
+
+    <!-- --- Seleção de período --- -->
+    <label class="lblData">
+      Início:
+      <input type="date" id="start">
+    </label>
+    <label class="lblData">
+      Fim:
+      <input type="date" id="end" style="margin-left: 10px;">
+    </label>
+
+    <!-- IDs distintos para cada botão -->
+    <button class="btnPDF" id="btnReportPDF" type="button">PDF</button>
+    <button class="btnExcel" id="btnReportExcel" type="button">Excel</button>
+    <hr>
+
+    <!-- --- EXISTENTE: Consulta diária --- -->
+    <label class="lblData">
+      Data:
+      <input type="date" id="date">
+    </label>
+    <div id="out"></div>
+    <button class="back-btn" onclick="history.back()">Voltar</button>
+  </div>
+  <script src="js/diary.js"></script>
+</body>
+
+</html>

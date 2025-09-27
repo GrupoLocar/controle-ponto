@@ -1,7 +1,7 @@
 require('dotenv').config();
 const express       = require('express');
 const path          = require('path');
-const fs            = require('fs'); // <- adicionado para checar dist/public
+const fs            = require('fs'); // <- mantém checagem dist/public
 const mongoose      = require('mongoose');
 const session       = require('express-session');
 const MongoStore    = require('connect-mongo');
@@ -53,7 +53,9 @@ app.post('/api/logout', (req, res) => {
   req.session.destroy(() => res.sendStatus(200));
 });
 
+// === MONTA A ROTA DE EXCEL ANTES DO CATCH-ALL ===
 const reportRouter = require('./routes/report');
+app.use('/api', ensureAuth, reportRouter);
 
 // retorna o usuário logado
 app.get('/api/me', ensureAuth, async (req, res) => {
@@ -262,5 +264,3 @@ const PORT = process.env.PORT || 3001;
 app.listen(PORT, '0.0.0.0', () => {
   console.log(`🚀 Servidor rodando em http://0.0.0.0:${PORT}`);
 });
-
-

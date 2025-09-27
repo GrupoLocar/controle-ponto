@@ -65,7 +65,7 @@ window.addEventListener('DOMContentLoaded', () => {
   // inicial
   loadDiary();
 
-  // --- Relatório PDF (já existente, apenas apontando ao novo ID) ---
+  // --- Relatório PDF ---
   btnRepPDF.addEventListener('click', () => {
     const start = startI.value;
     const end   = endI.value;
@@ -95,8 +95,6 @@ window.addEventListener('DOMContentLoaded', () => {
     }
 
     try {
-      // A rota deve gerar o Excel da coleção Punch do período [start..end]
-      // e retornar como application/vnd.openxmlformats-officedocument.spreadsheetml.sheet
       const url = `/api/report-excel?start=${encodeURIComponent(start)}&end=${encodeURIComponent(end)}&code=${encodeURIComponent(code || '')}`;
       const resp = await fetch(url, { method: 'GET', credentials: 'include' });
 
@@ -131,4 +129,3 @@ window.addEventListener('DOMContentLoaded', () => {
     }
   });
 });
-

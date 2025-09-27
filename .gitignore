@@ -6,7 +6,13 @@ node_modules/
 Thumbs.db
 
 # Ignorar arquivos de log
+# Logs, caches
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
 *.log
+.vscode/
 
 # Ignorar arquivos de configuração local
 .env

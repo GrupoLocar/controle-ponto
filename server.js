@@ -53,6 +53,8 @@ app.post('/api/logout', (req, res) => {
   req.session.destroy(() => res.sendStatus(200));
 });
 
+const reportRouter = require('./routes/report');
+
 // retorna o usuário logado
 app.get('/api/me', ensureAuth, async (req, res) => {
   const emp = await Employee.findById(req.session.employeeId);
@@ -260,3 +262,5 @@ const PORT = process.env.PORT || 3001;
 app.listen(PORT, '0.0.0.0', () => {
   console.log(`🚀 Servidor rodando em http://0.0.0.0:${PORT}`);
 });
+
+

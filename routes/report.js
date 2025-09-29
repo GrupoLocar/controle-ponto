@@ -76,6 +76,14 @@ function formatTimeSP(date) {
   });
 }
 
+/** Util adicional: formata hora HH:MM (sem segundos) em America/Sao_Paulo */
+function formatTimeSP_HHMM(date) {
+  return new Date(date).toLocaleTimeString('pt-BR', {
+    timeZone: 'America/Sao_Paulo',
+    hour: '2-digit', minute: '2-digit'
+  });
+}
+
 /** Util: formata data DD/MM/AAAA em America/Sao_Paulo */
 function formatDateSP_DDMMYYYY(date) {
   return new Date(date).toLocaleDateString('pt-BR', {
@@ -178,7 +186,6 @@ router.get('/report-excel', async (req, res) => {
     wb.created = new Date();
 
     // Para cada mês (planilha)
-    // Ordena meses pelo ano/mes
     const monthKeysSorted = Array.from(byMonth.keys()).sort((a,b) => a.localeCompare(b));
     if (monthKeysSorted.length === 0) {
       // Sem registros: cria uma planilha informativa
@@ -190,16 +197,15 @@ router.get('/report-excel', async (req, res) => {
         const sheetName = `${m.monthName} ${m.year}`.slice(0, 31); // limite Excel
         const ws = wb.addWorksheet(sheetName);
 
-        // Cabeçalho (REMOVIDAS colunas Origem/Latitude/Longitude)
+        // Larguras para o layout solicitado (6 colunas)
         ws.columns = [
-          { header: 'Funcionário (Código)', key: 'employeeCode', width: 20 },
-          { header: 'Funcionário (Nome)',   key: 'employeeName', width: 32 },
-          { header: 'Data',                 key: 'date',         width: 12 },
-          { header: 'Hora',                 key: 'time',         width: 10 },
-          { header: 'Tipo',                 key: 'type',         width: 22 }
+          { width: 14 }, // Data
+          { width: 12 }, // Entrada
+          { width: 16 }, // Saída p/ Almoço
+          { width: 20 }, // Retorno do Almoço
+          { width: 12 }, // Saída
+          { width: 16 }  // Total
         ];
-        ws.views = [{ state: 'frozen', ySplit: 1 }];
-        ws.getRow(1).font = { bold: true };
 
         // Funcionários em ordem alfabética (por nome)
         const employeesSorted = Array.from(m.employees.entries())
@@ -210,6 +216,31 @@ router.get('/report-excel', async (req, res) => {
           });
 
         for (const [, empObj] of employeesSorted) {
+          // Cabeçalho do bloco por funcionário
+          const rowStart = ws.lastRow ? ws.lastRow.number + 1 : 1;
+
+          const r1 = ws.addRow([`Funcionário (Código): ${empObj.code}`]);
+          ws.mergeCells(r1.number, 1, r1.number, 6);
+          r1.font = { bold: true };
+
+          const r2 = ws.addRow([`Funcionário (Nome): ${empObj.name}`]);
+          ws.mergeCells(r2.number, 1, r2.number, 6);
+          r2.font = { bold: true };
+
+          // Linha em branco
+          ws.addRow(['','','','','','']);
+
+          // Títulos da tabela do funcionário
+          const header = ws.addRow([
+            'Data',
+            'Entrada',
+            'Saída p/ Almoço',
+            'Retorno do Almoço',
+            'Saída',
+            'Total'
+          ]);
+          header.font = { bold: true };
+
           // Dias em ordem crescente
           const daysSorted = Array.from(empObj.days.keys()).sort((a,b) => a.localeCompare(b));
 
@@ -226,34 +257,39 @@ router.get('/report-excel', async (req, res) => {
               return (TYPE_ORDER[a.type] ?? 99) - (TYPE_ORDER[b.type] ?? 99);
             });
 
-            // Linhas do dia (um registro por batida)
-            for (const p of dayPunches) {
-              ws.addRow({
-                employeeCode: empObj.code || '',
-                employeeName: empObj.name || '',
-                date: formatDateSP_DDMMYYYY(p.timestamp),
-                time: formatTimeSP(p.timestamp),
-                type: TYPE_LABEL[p.type] || p.type || ''
-              });
-            }
+            // Pega horários (se existirem)
+            const firstIN         = dayPunches.find(p => p.type === 'IN');
+            const firstLunchStart = dayPunches.find(p => p.type === 'LUNCH_START');
+            const firstLunchEnd   = dayPunches.find(p => p.type === 'LUNCH_END');
+            const firstOUT        = dayPunches.find(p => p.type === 'OUT');
 
-            // Acumula total de horas do dia no total do funcionário
-            employeeTotalMs += computeWorkedMsForDay(dayPunches);
+            const inTime    = firstIN ? formatTimeSP_HHMM(firstIN.timestamp) : '';
+            const lunchOut  = firstLunchStart ? formatTimeSP_HHMM(firstLunchStart.timestamp) : '';
+            const lunchIn   = firstLunchEnd ? formatTimeSP_HHMM(firstLunchEnd.timestamp) : '';
+            const outTime   = firstOUT ? formatTimeSP_HHMM(firstOUT.timestamp) : '';
+
+            const workedMs  = computeWorkedMsForDay(dayPunches);
+            const workedHHMM = msToHHMM(workedMs);
+            employeeTotalMs += workedMs;
+
+            ws.addRow([
+              formatDateSP_DDMMYYYY(dayKey),
+              inTime,
+              lunchOut,
+              lunchIn,
+              outTime,
+              workedHHMM
+            ]);
           }
 
-          // RESUMO do funcionário (linhas finais)
+          // Linha de resumo "Total de Horas: HH:MM hs"
           const totalHHMM = msToHHMM(employeeTotalMs);
-          const summaryRow = ws.addRow({
-            employeeCode: '',
-            employeeName: '',
-            date: '',
-            time: '',
-            type: `Total de Horas: ${totalHHMM} hs`
-          });
-          summaryRow.font = { bold: true };
+          const totalRow = ws.addRow(['','','','','', `Total de Horas: ${totalHHMM} hs`]);
+          totalRow.font = { bold: true };
+          totalRow.getCell(6).alignment = { horizontal: 'right' };
 
-          // Espaço de pelo menos 1 linha entre funcionários
-          ws.addRow(['','','','','']);
+          // Linha em branco entre funcionários
+          ws.addRow(['','','','','','']);
         }
       }
     }
